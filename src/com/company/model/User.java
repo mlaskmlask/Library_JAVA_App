@@ -4,17 +4,26 @@ public class User {
     String name;
     String surname;
     Role role;
+    String login;
+    String password;
 
 
     public enum Role {
         ADMIN,
         USER
+
     }
 
-    public User(String name, String surname, Role role) {
+    public User(String name, String surname, Role role, String login, String password) {
         this.name = name;
         this.surname = surname;
         this.role = role;
+        this.login = login;
+        this.password = password;
+
+        if (name == null || surname == null || role == null || password == null || login == null) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public String getName() {
@@ -39,5 +48,21 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
     }
 }
