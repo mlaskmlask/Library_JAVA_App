@@ -24,15 +24,26 @@ public class RepositoryUser {
     }
 
     public User findUser(String login) {
-        for (User currentUser : this.userList){
-            if (currentUser.getLogin().equals(login)){
+        for (User currentUser : this.userList) {
+            if (currentUser.getLogin().equals(login)) {
                 return currentUser;
             }
         }
         return null;
     }
 
-    public void addUser (User user){
+    public void addUser(User user) {
         this.userList.add(user);
+    }
+
+    public boolean login(String login, String pass) {
+        for (User currentUser : this.userList) {
+            if (currentUser.getLogin().equals(login)) {
+                if (currentUser.getPassword().equals(pass)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -12,6 +12,7 @@ public class GUI {
 
     private static Scanner scanner = new Scanner(System.in);
 
+
     public static void showMenu() {
         System.out.println("1. Wyświetl książki");
         System.out.println("2. Wypożycz książkę");
@@ -36,6 +37,8 @@ public class GUI {
                 showMenu();
                 break;
             case "4":
+                login();
+                showMenu();
                 break;
             case "5":
                 addBook();
@@ -57,19 +60,6 @@ public class GUI {
         }
     }
 
-    private static void borrowBook() {
-        System.out.println("Podaj tytuł książki:");
-        String userInputTitle = scanner.nextLine();
-        System.out.println("Podaj ilość sztuk:");
-        int userInputPieces = Integer.parseInt(scanner.nextLine());
-        RepositoryBook repositoryBook = RepositoryBook.getInstance();
-        boolean result = repositoryBook.borrowBook(userInputTitle, userInputPieces);
-        if (result) {
-            System.out.println("Wypożyczono");
-        } else {
-            System.out.println("Wypożyczenie nieudane.");
-        }
-    }
 
     private static void addBook() {
         System.out.println("Podaj tytuł:");
@@ -103,37 +93,65 @@ public class GUI {
     }
 
     private static void register() {
-        System.out.println("Podaj login");
+        System.out.println("- FORMULARZ REJESTRACJI -");
+        System.out.println("Podaj login:");
         RepositoryUser repositoryUser = RepositoryUser.getInstance();
-        String password = null;
-        String name = null;
-        String surname = null;
-        String login = null;
-        User.Role role = null;
         try {
-            login = scanner.nextLine();
+            String login = scanner.nextLine();
             User userFromDB = repositoryUser.findUser(login);
             if (userFromDB != null) {
                 System.out.println("Login istnieje już w bazie. Zaloguj się! ");
             } else {
                 System.out.println("Podaj hasło:");
-                password = scanner.nextLine();
+                String password = scanner.nextLine();
                 System.out.println("Podaj imię: ");
-                name = scanner.nextLine();
+                String name = scanner.nextLine();
                 System.out.println("Podaj nazwisko: ");
-                surname = scanner.nextLine();
+                String surname = scanner.nextLine();
+                System.out.println("Podaj rolę (ADMIN/USER):");
+                User.Role role = User.Role.valueOf(scanner.nextLine());
+                User newUser = new User(name, surname, role, login, password);
+                repositoryUser.addUser(newUser);
+                System.out.println("Dodano nowego użytkownika!");
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Wszystkie pola powinny być uzupełnione. ");
+            System.out.println("Podaj rolę w formacie ADMIN / USER");
+            register();
         }
-        System.out.println("Podaj rolę (ADMIN/USER):");
-        try {
-            role = User.Role.valueOf(scanner.nextLine());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Podaj rolę w formacie ADMIN lub USER");
+    }
+
+    private static boolean login() {
+        System.out.println("Podaj login:");
+        String inputLogin = scanner.nextLine();
+        System.out.println("Podaj hasło:");
+        String inputPassword = scanner.nextLine();
+        RepositoryUser repositoryUser = RepositoryUser.getInstance();
+        if (repositoryUser.login(inputLogin, inputPassword)) {
+            System.out.println("Zalogowano");
+            return true;
+        } else {
+            System.out.println("Niepoprawne dane");
+            return false;
         }
-        User newUser = new User(name, surname, role, login, password);
-        repositoryUser.addUser(newUser);
-        System.out.println("Dodano nowego użytkownika!");
+    }
+
+    private static void borrowBook() {
+        System.out.println("Podaj tytuł książki:");
+        String userInputTitle = scanner.nextLine();
+        System.out.println("Podaj ilość sztuk:");
+        int userInputPieces = Integer.parseInt(scanner.nextLine());
+        RepositoryBook repositoryBook = RepositoryBook.getInstance();
+        boolean result = repositoryBook.borrowBook(userInputTitle, userInputPieces);
+        if (result) {
+            System.out.println("Wypożyczono");
+        } else {
+            System.out.println("Wypożyczenie nieudane.");
+        }
     }
 }
+
+
+
+
+
+

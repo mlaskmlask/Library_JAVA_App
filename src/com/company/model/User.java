@@ -1,5 +1,6 @@
 package com.company.model;
 
+
 public class User {
     String name;
     String surname;
@@ -20,10 +21,6 @@ public class User {
         this.role = role;
         this.login = login;
         this.password = password;
-
-        if (name == null || surname == null || role == null || password == null || login == null) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public String getName() {
