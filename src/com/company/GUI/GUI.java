@@ -15,11 +15,10 @@ public class GUI {
 
     public static void showMenu() {
         System.out.println("1. Wyświetl książki");
-        System.out.println("2. Wypożycz książkę");
-        System.out.println("3. Zarejestruj się");
-        System.out.println("4. Zaloguj się");
-        System.out.println("5. Dodaj książkę (ADMIN)");
-        System.out.println("6. Wyjście");
+        System.out.println("2. Zarejestruj się");
+        System.out.println("3. Zaloguj się aby wypożyczyć");
+        System.out.println("4. Dodaj książkę (ADMIN)");
+        System.out.println("5. Wyjście");
 
         String userInput = scanner.nextLine();
 
@@ -29,22 +28,18 @@ public class GUI {
                 showMenu();
                 break;
             case "2":
-                borrowBook();
-                showMenu();
-                break;
-            case "3":
                 register();
                 showMenu();
                 break;
-            case "4":
+            case "3":
                 login();
                 showMenu();
                 break;
-            case "5":
+            case "4":
                 addBook();
                 showMenu();
                 break;
-            case "6":
+            case "5":
                 System.exit(0);
             default:
                 System.out.println("Podano niewłaściwe dane.");
@@ -128,7 +123,8 @@ public class GUI {
         RepositoryUser repositoryUser = RepositoryUser.getInstance();
         if (repositoryUser.login(inputLogin, inputPassword)) {
             System.out.println("Zalogowano");
-            return true;
+            borrowBook();
+          return true;
         } else {
             System.out.println("Niepoprawne dane");
             return false;
@@ -136,6 +132,7 @@ public class GUI {
     }
 
     private static void borrowBook() {
+        System.out.println("-FORMULARZ WYPOŻYCZENIA-");
         System.out.println("Podaj tytuł książki:");
         String userInputTitle = scanner.nextLine();
         System.out.println("Podaj ilość sztuk:");
