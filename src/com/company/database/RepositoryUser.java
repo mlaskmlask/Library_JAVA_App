@@ -1,6 +1,7 @@
 package com.company.database;
 
 import com.company.model.User;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +12,12 @@ public class RepositoryUser {
     List<User> userList = new ArrayList<>();
 
     public RepositoryUser() {
-        userList.add(new User("Kasia", "Kowalska", User.Role.ADMIN, "kasia", "kasia"));
-        userList.add(new User("Tomek", "Kowal", User.Role.USER, "tomek", "tomek"));
+        userList.add(new User("Kasia", "Kowalska", User.Role.ADMIN, "kasia", DigestUtils.md5Hex("kasia")));
+        userList.add(new User("Tomek", "Kowal", User.Role.USER, "tomek", DigestUtils.md5Hex("tomek")));
     }
 
     public static RepositoryUser getInstance() {
         return repositoryUser;
-    }
-
-    public List<User> getUserList() {
-        return userList;
     }
 
     public User findUser(String login) {
@@ -39,7 +36,7 @@ public class RepositoryUser {
     public boolean login(String login, String pass) {
         for (User currentUser : this.userList) {
             if (currentUser.getLogin().equals(login)) {
-                if (currentUser.getPassword().equals(pass)) {
+                if (currentUser.getPassword().equals(DigestUtils.md5Hex(pass))) {
                     return true;
                 }
             }

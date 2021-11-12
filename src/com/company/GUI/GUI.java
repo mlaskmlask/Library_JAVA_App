@@ -4,6 +4,7 @@ import com.company.database.RepositoryBook;
 import com.company.database.RepositoryUser;
 import com.company.model.Book;
 import com.company.model.User;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.List;
 import java.util.Scanner;
@@ -120,7 +121,7 @@ public class GUI {
                 String surname = scanner.nextLine();
                 System.out.println("Podaj rolę (ADMIN/USER):");
                 User.Role role = User.Role.valueOf(scanner.nextLine());
-                User newUser = new User(name, surname, role, login, password);
+                User newUser = new User(name, surname, role, login, DigestUtils.md5Hex(password));
                 repositoryUser.addUser(newUser);
                 System.out.println("Dodano nowego użytkownika!");
             }
