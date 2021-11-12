@@ -12,13 +12,26 @@ public class GUI {
 
     private static Scanner scanner = new Scanner(System.in);
 
+    public static void showLoginRegisterMenu() {
+        System.out.println("1. Zarejestruj się");
+        System.out.println("2. Zaloguj się");
+
+        switch (scanner.nextLine()) {
+            case "1":
+                register();
+                showLoginRegisterMenu();
+            case "2":
+                login();
+                showLoginRegisterMenu();
+        }
+    }
+
 
     public static void showMenu() {
         System.out.println("1. Wyświetl książki");
-        System.out.println("2. Zarejestruj się");
-        System.out.println("3. Zaloguj się aby wypożyczyć");
-        System.out.println("4. Dodaj książkę (ADMIN)");
-        System.out.println("5. Wyjście");
+        System.out.println("2. Wypożycz książę");
+        System.out.println("3. Dodaj książkę (ADMIN)");
+        System.out.println("4. Wyjście");
 
         String userInput = scanner.nextLine();
 
@@ -28,18 +41,13 @@ public class GUI {
                 showMenu();
                 break;
             case "2":
-                register();
+                borrowBook();
                 showMenu();
-                break;
             case "3":
-                login();
-                showMenu();
-                break;
-            case "4":
                 addBook();
                 showMenu();
                 break;
-            case "5":
+            case "4":
                 System.exit(0);
             default:
                 System.out.println("Podano niewłaściwe dane.");
@@ -57,33 +65,40 @@ public class GUI {
 
 
     private static void addBook() {
-        System.out.println("Podaj tytuł:");
-        String bookTitle = scanner.nextLine();
-        RepositoryBook repositoryBook = RepositoryBook.getInstance();
-        Book bookFromDB = repositoryBook.findBook(bookTitle);
-        if (bookFromDB != null) {
-            System.out.println("Podaj ilość");
-            try {
-                int piecesToAdd = Integer.parseInt(scanner.nextLine());
-                bookFromDB.setPieces(bookFromDB.getPieces() + piecesToAdd);
-                System.out.println("Zwiększono ilość sztuk!");
-            } catch (NumberFormatException e) {
-                System.out.println("Niepoprawne dane!");
-                addBook();
+        System.out.println("Podaj swoją rolę (ADMIN/USER)");
+        String ifAdmin = scanner.nextLine();
+        if (ifAdmin.equals("ADMIN")) {
+            System.out.println("Podaj tytuł:");
+            String bookTitle = scanner.nextLine();
+            RepositoryBook repositoryBook = RepositoryBook.getInstance();
+            Book bookFromDB = repositoryBook.findBook(bookTitle);
+            if (bookFromDB != null) {
+                System.out.println("Podaj ilość");
+                try {
+                    int piecesToAdd = Integer.parseInt(scanner.nextLine());
+                    bookFromDB.setPieces(bookFromDB.getPieces() + piecesToAdd);
+                    System.out.println("Zwiększono ilość sztuk!");
+                } catch (NumberFormatException e) {
+                    System.out.println("Niepoprawne dane!");
+                    addBook();
+                }
+            } else {
+                System.out.println("Podaj autora:");
+                String authorInput = scanner.nextLine();
+                System.out.println("Podaj ilość sztuk:");
+                try {
+                    int piecesInput = Integer.parseInt(scanner.nextLine());
+                    Book book = new Book(bookTitle, authorInput, piecesInput);
+                    repositoryBook.addBookToDB(book);
+                    System.out.println("Książka dodana!");
+                } catch (NumberFormatException e) {
+                    System.out.println("Podaj prawidłową ilość sztuk");
+                    addBook();
+                }
             }
         } else {
-            System.out.println("Podaj autora:");
-            String authorInput = scanner.nextLine();
-            System.out.println("Podaj ilość sztuk:");
-            try {
-                int piecesInput = Integer.parseInt(scanner.nextLine());
-                Book book = new Book(bookTitle, authorInput, piecesInput);
-                repositoryBook.addBookToDB(book);
-                System.out.println("Książka dodana!");
-            } catch (NumberFormatException e) {
-                System.out.println("Podaj prawidłową ilość sztuk");
-                addBook();
-            }
+            System.out.println("Tylko admin może dodać książkę. ");
+            showMenu();
         }
     }
 
@@ -123,8 +138,8 @@ public class GUI {
         RepositoryUser repositoryUser = RepositoryUser.getInstance();
         if (repositoryUser.login(inputLogin, inputPassword)) {
             System.out.println("Zalogowano");
-            borrowBook();
-          return true;
+            showMenu();
+            return true;
         } else {
             System.out.println("Niepoprawne dane");
             return false;
